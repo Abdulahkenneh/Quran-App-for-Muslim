@@ -1,0 +1,123 @@
+{% extends 'quranApp/base.html' %}
+
+{% block content %}
+
+{{ tryresponse_obj }}
+<div class="jumbotron text-center bg-primary text-white py-5">
+    <h1 class="display-4">ISLAMIC DAWAH TRAINING COLLABORATION (IDTC)</h1>
+    <p class="lead">Your Companion for Reading, Understanding, and Memorizing the Qur'an</p>
+    <a href="{% url 'quranApp:sura-detail' 1 %}" class="btn btn-light btn-lg m-2">Read the Qur'an</a>
+</div>
+
+<div class="container my-5">
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">Memorization Tracker</h2>
+                    <p class="card-text">Keep track of your Qur'an memorization progress.</p>
+                    <a href="{% url 'quranApp:memorization' %}" class="btn btn-outline-primary">Start Tracking</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">Daily Ayah</h2>
+                    <p class="card-text">Read a verse each day to stay connected with the Qur'an.</p>
+                    <a href="{% url 'quranApp:daily_ayah' %}" class="btn btn-outline-primary">Today's Ayah</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">Prayer Times</h2>
+                    <p class="card-text">Check prayer times based on your location.</p>
+                    <a href="{% url 'quranApp:prayer_times' %}" class="btn btn-outline-primary">See Prayer Times</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search for ayahs or surah in the Al-Qur'an -->
+<div class="container-fluid">
+    <form class="d-flex my-4" method="GET" action="{% url 'quranApp:home' %}">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search for keywords in the Quran" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+</div>
+
+{% if search_response %}
+    <h3 class="my-4 text-primary">Search Results for "<em>{{ query }}</em>"</h3>
+    <h3 class="mt-2 mb-0">Counts: {{ search_response.count }}</h3>
+    <ul class="list-group mb-4">
+        {% for result in search_response %}
+            <li class="list-group-item">
+                <strong class="text-success">
+                    <a href="{% url 'quranApp:sura-detail-with-ayah' surah_id=result.surah.number ayah_id=result.numberInSurah %}" class="btn btn-outline-success">{{ result.surah.englishName }}</a>
+                    (Ayah {{ result.numberInSurah }}):
+                </strong>
+                <p class="mt-2 mb-0">{{ result.text }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    <a style="float:right; background:blue; color:white;" href="{% url 'quranApp:home' %}" class="btn btn-outline-success">Close</a>
+{% elif query %}
+    <p class="text-danger">No results found for "<em>{{ query }}</em>".</p>
+{% endif %}
+
+<!-- Surah Section with English, Arabic, and Translation -->
+<div class="container my-5">
+    <h2 class="text-center mb-4">All Surahs</h2>
+    <div class="row">
+        {% for surah in chapters %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <!-- Surah Number with Custom Design -->
+                        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #28a745; color: white; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 10px;">
+                            <h4 class="mb-0" style="font-weight: bold;">{{ surah.id }}</h4>
+                        </div>
+
+                        <!-- Surah Name and Details -->
+                        <h3 class="text-muted" style="font-weight: bold;">{{ surah.name }}</h3>
+                        <h5 class="card-title">{{ surah.english_name }}</h5>
+                        <p class="card-text"><em>{{ surah.english_name_translation }}</em></p>
+                        <p class="card-text">Revealed in {{ surah.revelation_place }} - {{ total_ayahs }} Ayahs</p>
+
+                        <!-- Read Surah Button -->
+                        <a href="{% url 'quranApp:sura-detail' surah_id=surah.id %}" class="btn btn-outline-success">Read Surah</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Styling -->
+<style>
+    .jumbotron {
+        background-image: url('path/to/your/background-image.jpg');
+        background-size: cover;
+    }
+
+    .btn-outline-primary {
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-success {
+        color: #28a745;
+        border-color: #28a745;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+</style>
+
+{% endblock %}

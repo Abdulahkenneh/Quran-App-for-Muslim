@@ -1,0 +1,159 @@
+{% extends 'quranApp/base.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container">
+{{verse_from_quran_com_url_response_obj}}
+    {% if zip_lists %}
+        <div class="verses-section">
+            <!-- Add Repeat Control -->
+            <div class="repeat-control mb-4">
+                <label>
+                    <input type="checkbox" id="repeatCheckbox">
+                    Repeat Verses
+                </label>
+            </div>
+             {{default_language}}
+
+            {% for i in  mydefault_language %}
+            {{i.text}}
+            {% endfor %}
+            {% for arabic_verse, translated_verse , verse_info  in zip_lists %}
+        {{ verse_info }}
+                <div class="verse-item mb-4">
+                    <!-- Arabic Verse -->
+                    <p class="arabic-text">
+                        <span class="verse-icon">
+                            &#1757;
+                                {{verse.text}}
+
+                            <span class="verse-number">{{ verse_info.id }}</span>
+                        </span>
+                    </p>
+
+
+                    <!-- Translated Verse (User's preferred language) -->
+                    <p class="english-translation">
+                        <span class="verse-icon">
+                            &#1757;
+                            <span class="verse-number">{{ forloop.counter }}</span>
+                        </span>
+                        {{ translated_verse.text_arabic }}
+                    </p>
+
+                    <!-- Audio Player for the Verse -->
+                    {% with audio_edition='ar.alafasy' audio_quality='128' %}
+                        {% with audio_number=verse_info.id|stringformat:"s" %}
+                            {% with audio_url='https://cdn.islamic.network/quran/audio/'|add:audio_quality|add:'/'|add:audio_edition|add:'/'|add:audio_number|add:'.mp3' %}
+                                <audio controls class="audio-player" id="audioPlayer{{ forloop.counter }}">
+                                    <source src="{{ audio_url }}" type="audio/mp3">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No verses or translations available at this moment. Please try again later.</p>
+    {% endif %}
+</div>
+
+<!-- JavaScript for Repeat Functionality -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const repeatCheckbox = document.getElementById('repeatCheckbox');
+        const audioPlayers = document.querySelectorAll('.audio-player');
+
+        repeatCheckbox.addEventListener('change', function () {
+            audioPlayers.forEach(function (audioPlayer) {
+                // If the checkbox is checked, enable looping; otherwise, disable it
+                if (repeatCheckbox.checked) {
+                    audioPlayer.loop = true;
+                } else {
+                    audioPlayer.loop = false;
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Styling -->
+<style>
+    body {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .verses-section {
+        margin-top: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .repeat-control {
+        display: flex;
+        justify-content: flex-end;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .verse-item {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #f9f9f9;
+        transition: background-color 0.3s;
+    }
+
+    .verse-item:hover {
+        background-color: #e9f7ef;
+    }
+
+    .arabic-text {
+        font-family: 'Naskh', serif;
+        font-size: 1.6em;
+        text-align: right;
+        direction: rtl;
+        padding: 1rem;
+    }
+
+    .english-translation {
+        font-family: 'Arial', serif;
+        font-size: 1.2em;
+        padding: 1rem;
+        font-style: italic;
+        text-align: left;
+        direction: ltr;
+    }
+
+    .verse-icon {
+        display: inline-block;
+        position: relative;
+        font-size: 1.5em;
+        line-height: 1;
+    }
+
+    .verse-icon .verse-number {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.6em;
+        font-weight: bold;
+    }
+
+    .audio-player {
+        width: 100%;
+        margin-top: 10px;
+    }
+</style>
+
+{% endblock %}

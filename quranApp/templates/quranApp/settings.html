@@ -1,0 +1,113 @@
+
+    {% block content %}
+
+<div class="container">
+    <h1 class="mb-4">Quran App Settings</h1>
+
+    <!-- Favorite Reciter Selection -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Favorite Reciter</h5>
+            <form method="POST" action="{% url 'quranApp:favorite_reciters' %}">
+                {% csrf_token %}
+                <select class="form-select" name="reciter_id">
+                    <option selected disabled>Choose your favorite reciter</option>
+                    {% for reciter in reciters %}
+                        <option value="{{ reciter.id }}"
+                        {% if reciter in favorites %}selected{% endif %}>
+                            {{ reciter.name }} ({{ reciter.language.name }})
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-save mt-3">Save Favorite Reciter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Language Selection -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Translation Language</h5>
+            <form method="POST" action="{% url 'quranApp:update_language_settings' %}">
+                {% csrf_token %}
+                <select class="form-select" name="language_id">
+                    <option selected disabled>Choose translation language</option>
+                    {% for language in languages %}
+                        <option value="{{ language.id }}"
+                        {% if language.id == user.selected_language_id %}selected{% endif %}>
+                            {{ language.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn btn-save mt-3">Save Language</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Audio Playback Settings -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Audio Playback</h5>
+            <form method="POST" action="{% url 'quranApp:update_audio_settings' %}">
+                {% csrf_token %}
+                <div class="form-group mb-2">
+                    <label for="playback-speed">Playback Speed</label>
+                    <select class="form-select" id="playback-speed" name="playback_speed">
+                        <option value="1.0" {% if user.playback_speed == 1.0 %}selected{% endif %}>Normal</option>
+                        <option value="1.5" {% if user.playback_speed == 1.5 %}selected{% endif %}>1.5x</option>
+                        <option value="2.0" {% if user.playback_speed == 2.0 %}selected{% endif %}>2.0x</option>
+                    </select>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="repeat" name="repeat" {% if user.repeat == True %}checked{% endif %}>
+                    <label class="form-check-label" for="repeat">Repeat Recitation</label>
+                </div>
+                <button type="submit" class="btn btn-save mt-3">Save Playback Settings</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications Settings -->
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Notifications</h5>
+            <form method="POST" action="{% url 'quranApp:update_notifications_settings' %}">
+                {% csrf_token %}
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="daily-verse" name="daily_verse"
+                    {% if user.daily_verse == True %}checked{% endif %}>
+                    <label class="form-check-label" for="daily-verse">Receive Daily Verses</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="prayer-times" name="prayer_times"
+                    {% if user.prayer_times == True %}checked{% endif %}>
+                    <label class="form-check-label" for="prayer-times">Notify Prayer Times</label>
+                </div>
+                <button type="submit" class="btn btn-save mt-3">Save Notification Settings</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+ <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        h5.card-title {
+            color: #343a40;
+        }
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+
+
+
+
+{% endblock %}
