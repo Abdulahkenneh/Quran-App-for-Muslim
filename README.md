@@ -38,7 +38,7 @@ A feature-rich, interactive application for exploring the Holy Quran. This appli
 1. Clone the repository:
    ```bash
    git clone https://github.com/Abdulahkenneh/Quran-App-for-Muslim.git
-   cd quran-explorer
+   cd quranApp
 
 
 
