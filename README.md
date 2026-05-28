@@ -89,7 +89,7 @@ AlQuran Cloud for Quranic text and audio APIs.
 The global Muslim community for their support and feedback.
 Made with 💖 and 🌙 by <h2>Abdulah Mamadee Kenneh</h2>
 
-
+**[Visit DataSkilla Academy →](https://dataskillacademy.com)**
 Let me know if you need further tweaks!
 
 
